@@ -9,13 +9,13 @@ enum RequestCheckingUrlStateStatus {
 }
 
 class RequestCheckingUrlState extends Equatable {
-  final RequestCheckingUrlStateStatus status;
-  final RequestCheckingUrlEntity detail;
-  final String errorMessage;
+  final RequestCheckingUrlStateStatus? status;
+  final RequestCheckingUrlEntity? detail;
+  final String? errorMessage;
 
   RequestCheckingUrlState({this.status, this.detail, this.errorMessage});
 
-  RequestCheckingUrlState copyWith({RequestCheckingUrlStateStatus status, RequestCheckingUrlEntity detail, String errorMessage}) =>
+  RequestCheckingUrlState copyWith({RequestCheckingUrlStateStatus? status, RequestCheckingUrlEntity? detail, String? errorMessage}) =>
       RequestCheckingUrlState(
        status: status ?? this.status,
        detail: detail ?? this.detail,

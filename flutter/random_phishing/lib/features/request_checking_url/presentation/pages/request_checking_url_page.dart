@@ -5,8 +5,8 @@ import 'package:random_phishing/features/request_checking_url/di/request_checkin
 import 'package:random_phishing/features/request_checking_url/presentation/blocs/request_checking_url_bloc.dart';
 
 class RequestCheckingUrlPage extends StatefulWidget {
-  const RequestCheckingUrlPage({Key key, this.arguments}) : super(key: key);
-  final Map<String, dynamic> arguments;
+  const RequestCheckingUrlPage({Key? key, this.arguments}) : super(key: key);
+  final Map<String, dynamic>? arguments;
 
   @override
   _RequestCheckingUrlPageState createState() => _RequestCheckingUrlPageState();
@@ -14,7 +14,7 @@ class RequestCheckingUrlPage extends StatefulWidget {
 
 class _RequestCheckingUrlPageState extends State<RequestCheckingUrlPage> {
   bool _isLoading = false;
-  RequestCheckingUrlBloc _bloc;
+  RequestCheckingUrlBloc? _bloc;
 
   @override
   void initState() {
