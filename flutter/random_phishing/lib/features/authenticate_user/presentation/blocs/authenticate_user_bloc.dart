@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ffi';
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
@@ -16,7 +17,7 @@ class AuthenticateUserBloc
   AuthenticateUserBloc(
       {required FetchAuthenticateUserUseCase fetchAuthenticateUserUseCase})
       : this.fetchAuthenticateUserUseCase = fetchAuthenticateUserUseCase,
-        super(AuthenticateUserState(status: AuthenticateUserStateStatus.init));
+        super(AuthenticateUserState(status: AuthenticateUserStateStatus.init, role: AuthenticateUserRole.guest, errorMessage: ""));
 
   @override
   Stream<AuthenticateUserState> mapEventToState(
@@ -30,13 +31,16 @@ class AuthenticateUserBloc
       EventFetchAuthenticateUser event) async* {
     yield state.copyWith(status: AuthenticateUserStateStatus.showLoading);
     final result = await fetchAuthenticateUserUseCase(
-        FetchAuthenticateUserParam(id: event.id));
+        FetchAuthenticateUserParam(
+          username: event.username, 
+          password: event.password, 
+          isLoginAsGuest: event.loginasGuest));
     yield state.copyWith(status: AuthenticateUserStateStatus.hideLoading);
     yield result.fold(
         (failure) => state.copyWith(
             status: AuthenticateUserStateStatus.loadedFailed,
             errorMessage: 'Có lỗi xảy ra. Vui lòng thử lại.'),
         (data) => state.copyWith(
-            status: AuthenticateUserStateStatus.loadedSuccess, detail: data));
+            status: AuthenticateUserStateStatus.loadedSuccess, role: AuthenticateUserState.mapAuthenticateCodeToRole[data.role] ?? AuthenticateUserRole.guest));
   }
 }

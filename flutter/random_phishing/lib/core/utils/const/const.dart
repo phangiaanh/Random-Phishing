@@ -1,5 +1,6 @@
 class ConstParameters {
   static String HomePage = '/';
+  static String Login = '/login';
   static String CheckPhishingPage = '/check';
   static String HistoryPage = '/history';
   static String RegistrationPage = '/registation';

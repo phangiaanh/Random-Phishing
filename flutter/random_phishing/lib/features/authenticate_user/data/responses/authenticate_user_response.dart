@@ -1,11 +1,11 @@
 import 'package:flutter/foundation.dart';
 
 class AuthenticateUserResponse {
-  final String id;
-  final String name;
-  AuthenticateUserResponse({@required this.id, @required this.name});
+  final String username;
+  final String role;
+  AuthenticateUserResponse({required this.username, required this.role});
 
   factory AuthenticateUserResponse.fromJson(Map<String, dynamic> json) {
-    return AuthenticateUserResponse(name: json["name"], id: json["id"]);
+    return AuthenticateUserResponse(username: json["username"], role: json["role"]);
   }
 }

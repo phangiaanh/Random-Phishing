@@ -6,10 +6,12 @@ abstract class AuthenticateUserEvent extends Equatable {
 }
 
 class EventFetchAuthenticateUser extends AuthenticateUserEvent {
-  final String id;
+  final String username;
+  final String password;
+  final Bool loginasGuest;
 
-  EventFetchAuthenticateUser({required this.id});
+  EventFetchAuthenticateUser({required this.username,required this.password,required this.loginasGuest});
 
   @override
-  List<Object> get props => [id];
+  List<Object> get props => [username];
 }

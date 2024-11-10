@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
 import 'package:random_phishing/core/error/failures.dart';
@@ -17,6 +19,8 @@ class FetchAuthenticateUserUseCase extends UseCase<AuthenticateUserEntity, Fetch
 }
 
 class FetchAuthenticateUserParam {
-  String id;
-  FetchAuthenticateUserParam({@required this.id});
+  String username;
+  String password;
+  Bool isLoginAsGuest;
+  FetchAuthenticateUserParam({required this.username, required this.password, required this.isLoginAsGuest});
 }

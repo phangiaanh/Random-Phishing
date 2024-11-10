@@ -16,6 +16,12 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
+      theme: ThemeData(
+          useMaterial3: true,
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.red)
+        ),
+      title: 'PhishTank',
+      debugShowCheckedModeBanner: false,
       routerConfig: MyAppRouterConfig().router,
     );
   }

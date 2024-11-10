@@ -8,23 +8,35 @@ enum AuthenticateUserStateStatus {
   loadedFailed,
 }
 
+enum AuthenticateUserRole {
+  guest,
+  user,
+  admin,
+}
+
 class AuthenticateUserState extends Equatable {
   final AuthenticateUserStateStatus status;
-  final AuthenticateUserEntity detail;
+  final AuthenticateUserRole role;
   final String errorMessage;
 
-  AuthenticateUserState({required this.status, this.detail, this.errorMessage});
+  static Map mapAuthenticateCodeToRole = {
+    "guest": AuthenticateUserRole.guest,
+    "user": AuthenticateUserRole.user,
+    "admin": AuthenticateUserRole.admin,
+  };
+
+  AuthenticateUserState({required this.status,required this.role,required this.errorMessage});
 
   AuthenticateUserState copyWith(
           {AuthenticateUserStateStatus status =
               AuthenticateUserStateStatus.init,
-          AuthenticateUserEntity detail,
-          String errorMessage}) =>
+          AuthenticateUserRole role = AuthenticateUserRole.guest,
+          String errorMessage = ""}) =>
       AuthenticateUserState(
           status: status ?? this.status,
-          detail: detail ?? this.detail,
+          role: role ?? this.role,
           errorMessage: errorMessage ?? this.errorMessage);
 
   @override
-  List<Object> get props => [status ?? '', detail ?? '', errorMessage ?? ''];
+  List<Object> get props => [status ?? AuthenticateUserStateStatus.init, role ?? AuthenticateUserRole.guest, errorMessage ?? ""];
 }

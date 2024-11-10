@@ -6,10 +6,10 @@ class MyAppRouterConfig {
   final router = GoRouter(routes: [
     GoRoute(
       path: ConstParameters.HomePage,
-      builder: (context, state) => const AuthenticateUserPage(),
+      builder: (context, state) => AuthenticateUserPage(),
     ),
-    GoRoute(path: ConstParameters.HistoryPage),
-    GoRoute(path: ConstParameters.HistoryPage),
-    GoRoute(path: ConstParameters.HistoryPage),
+    // GoRoute(path: ConstParameters.HistoryPage),
+    // GoRoute(path: ConstParameters.HistoryPage),
+    // GoRoute(path: ConstParameters.HistoryPage),
   ]);
 }

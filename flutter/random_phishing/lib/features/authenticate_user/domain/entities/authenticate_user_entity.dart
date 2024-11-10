@@ -1,11 +1,12 @@
 import 'package:equatable/equatable.dart';
 
 class AuthenticateUserEntity extends Equatable {
-  final String id;
-  final String name;
+  final String username;
+  final String password;
+  final String role;
 
-  AuthenticateUserEntity({this.id, this.name});
+  AuthenticateUserEntity({required this.username,required this.password, required this.role});
 
   @override
-  List<Object> get props => [id ?? '', name ?? ''];
+  List<Object> get props => [username ?? "", role ?? ""];
 }

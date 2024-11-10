@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:random_phishing/core/utils/const/const.dart';
+import 'package:random_phishing/core/utils/router/router.dart';
 import 'package:random_phishing/features/authenticate_user/di/authenticate_user_injector.dart';
 import 'package:random_phishing/features/authenticate_user/presentation/blocs/authenticate_user_bloc.dart';
 
@@ -14,13 +17,14 @@ class AuthenticateUserPage extends StatefulWidget {
 
 class _AuthenticateUserPageState extends State<AuthenticateUserPage> {
   bool _isLoading = false;
+  bool isLogin = false;
   late AuthenticateUserBloc _bloc;
 
   @override
   void initState() {
     _bloc = AuthenticateUserBloc(
         fetchAuthenticateUserUseCase: fetchAuthenticateUserUseCase);
-    _fetchAuthenticateUserData();
+    // _fetchAuthenticateUserData();
     super.initState();
   }
 
@@ -32,12 +36,71 @@ class _AuthenticateUserPageState extends State<AuthenticateUserPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    Widget widgetLeading;
+    if (isLogin) {
+      widgetLeading = ElevatedButton(
+          style: ElevatedButton.styleFrom(
+              shadowColor: Colors.transparent,
+              backgroundColor: Colors.transparent),
+          onPressed: () {
+            setState(() {
+              isLogin = false;
+            });
+          },
+          child: Icon(Icons.arrow_back));
+    } else {
+      widgetLeading = SizedBox.shrink();
+    }
     return BlocProvider(
       create: (_) => _bloc,
       child: Scaffold(
-        backgroundColor: Colors.white,
-        appBar: AppBar(title: Text('App bar')),
-        body: _buildBody(),
+        appBar: AppBar(
+          leading: widgetLeading,
+          backgroundColor: Colors.redAccent,
+          title: Center(
+            child: Text(
+              'PhishTank',
+              style: theme.textTheme.displayMedium!.copyWith(
+                color: theme.colorScheme.onPrimary,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ),
+        body: _buildLogin(context),
+      ),
+    );
+  }
+
+  Widget _buildLogin(BuildContext context) {
+    return Center(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton.icon(
+                onPressed: () {
+                  print('Continue as Guest');
+                  setState(() {
+                    isLogin = true;
+                  });
+                },
+                // icon: Icon(icon),
+                label: Text('Login'),
+              ),
+              SizedBox(height: 30),
+              ElevatedButton(
+                onPressed: () {
+                  print('Continue as Guest');
+                },
+                child: Text('Continue as Guest'),
+              ),
+            ],
+          )
+        ],
       ),
     );
   }
@@ -53,7 +116,7 @@ class _AuthenticateUserPageState extends State<AuthenticateUserPage> {
           },
           builder: (_, state) {
             if (state.status == AuthenticateUserStateStatus.loadedSuccess) {
-              return SafeArea(
+              return const SafeArea(
                 child: Stack(children: [
                   Positioned(
                       top: 0,
@@ -111,7 +174,7 @@ class _AuthenticateUserPageState extends State<AuthenticateUserPage> {
     });
   }
 
-  void _fetchAuthenticateUserData() {
-    _bloc?.add(EventFetchAuthenticateUser(id: 'xxx'));
-  }
+  // void _fetchAuthenticateUserData() {
+  //   _bloc.add(EventFetchAuthenticateUser(id: 'xxx'));
+  // }
 }
