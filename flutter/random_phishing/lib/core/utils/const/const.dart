@@ -7,3 +7,10 @@ class ConstParameters {
   static String UserManagementPage = '/user';
   static String ModelManagementPage = '/model';
 }
+
+class DataSourceUser {
+  static Map user = {
+    "watermelon_admin": {"pass": "Bachkhoamt", "role": "admin"},
+    "watermelon_user": {"pass": "Bachkhoamt", "role": "user"},
+  };
+}

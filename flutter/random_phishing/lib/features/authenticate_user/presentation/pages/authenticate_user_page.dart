@@ -1,3 +1,4 @@
+import 'dart:ffi';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -19,9 +20,10 @@ class AuthenticateUserPage extends StatefulWidget {
 
 class _AuthenticateUserPageState extends State<AuthenticateUserPage> {
   bool _isLoading = false;
-  bool isLogin = false;
+  bool _isLogin = false;
   bool _isUserEmpty = false;
   bool _isPassEmpty = false;
+  bool _isValidUserPass = true;
   late AuthenticateUserBloc _bloc;
 
   @override
@@ -42,14 +44,15 @@ class _AuthenticateUserPageState extends State<AuthenticateUserPage> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     Widget widgetLeading;
-    if (isLogin) {
+    if (_isLogin) {
       widgetLeading = ElevatedButton(
           style: ElevatedButton.styleFrom(
               shadowColor: Colors.transparent,
               backgroundColor: Colors.transparent),
           onPressed: () {
             setState(() {
-              isLogin = false;
+              _isLogin = false;
+              _isValidUserPass = true;
             });
           },
           child: Icon(Icons.arrow_back));
@@ -78,9 +81,23 @@ class _AuthenticateUserPageState extends State<AuthenticateUserPage> {
   }
 
   Widget _buildLogin(BuildContext context) {
-    if (isLogin) {
+    if (_isLogin) {
       TextEditingController _inputUserController = TextEditingController();
       TextEditingController _inputPassController = TextEditingController();
+
+      print(_isValidUserPass);
+      Widget checkUserPass;
+      if (_isValidUserPass) {
+        checkUserPass = SizedBox.shrink();
+      } else {
+        checkUserPass = Center(
+          child: Text(
+            "Invalid User or Password",
+            style: TextStyle(color: Colors.blue),
+          ),
+        );
+      }
+
       return Dialog(
         backgroundColor: Colors.transparent, // Transparent background
         child: Stack(
@@ -122,6 +139,45 @@ class _AuthenticateUserPageState extends State<AuthenticateUserPage> {
                               _isPassEmpty ? "Password can't be empty" : null),
                     ),
                     SizedBox(height: 20),
+                    BlocBuilder<AuthenticateUserBloc, AuthenticateUserState>(
+                      buildWhen: (previous, current) {
+                        print(previous.status);
+                        return current.status ==
+                                AuthenticateUserStateStatus.loadedSuccess ||
+                            current.status ==
+                                AuthenticateUserStateStatus.loadedFailed ||
+                            previous.status == AuthenticateUserStateStatus.init;
+                      },
+                      builder: (_, state) {
+                        if (state.status ==
+                            AuthenticateUserStateStatus.loadedSuccess) {
+                          return const SafeArea(
+                            child: Stack(children: [
+                              Positioned(
+                                  top: 0,
+                                  left: 0,
+                                  right: 0,
+                                  bottom: 0,
+                                  child: Center(child: Text('Welcome!')))
+                            ]),
+                          );
+                        } else if (state.status ==
+                            AuthenticateUserStateStatus.loadedFailed) {
+                          _isValidUserPass = false;
+                        }
+                        if (_isValidUserPass) {
+                          return SizedBox.shrink();
+                        } else {
+                          return Center(
+                            child: Text(
+                              "Invalid User or Password",
+                              style: TextStyle(color: Colors.blue),
+                            ),
+                          );
+                        }
+                      },
+                    ),
+                    SizedBox(height: 20),
                     ElevatedButton(
                       onPressed: () {
                         // Handle login action
@@ -129,6 +185,11 @@ class _AuthenticateUserPageState extends State<AuthenticateUserPage> {
                           _isUserEmpty = _inputUserController.text.isEmpty;
                           _isPassEmpty = _inputPassController.text.isEmpty;
                         });
+
+                        if (!_isUserEmpty & !_isPassEmpty) {
+                          _fetchAuthenticateUserData(_inputUserController.text,
+                              _inputPassController.text, false);
+                        }
                       },
                       child: Text("Login"),
                     ),
@@ -154,9 +215,11 @@ class _AuthenticateUserPageState extends State<AuthenticateUserPage> {
             children: [
               ElevatedButton.icon(
                 onPressed: () {
-                  print('Continue as Guest');
                   setState(() {
-                    isLogin = true;
+                    _isLogin = true;
+                    _isValidUserPass = true;
+                    _isUserEmpty = false;
+                    _isPassEmpty = false;
                   });
                 },
                 // icon: Icon(icon),
@@ -165,7 +228,7 @@ class _AuthenticateUserPageState extends State<AuthenticateUserPage> {
               SizedBox(height: 30),
               ElevatedButton(
                 onPressed: () {
-                  print('Continue as Guest');
+                  _fetchAuthenticateUserData("", "", true);
                 },
                 child: Text('Continue as Guest'),
               ),
@@ -173,57 +236,6 @@ class _AuthenticateUserPageState extends State<AuthenticateUserPage> {
           )
         ],
       ),
-    );
-  }
-
-  Widget _buildBody() {
-    return Stack(
-      children: [
-        BlocBuilder<AuthenticateUserBloc, AuthenticateUserState>(
-          buildWhen: (previous, current) {
-            return current.status ==
-                    AuthenticateUserStateStatus.loadedSuccess ||
-                current.status == AuthenticateUserStateStatus.loadedFailed;
-          },
-          builder: (_, state) {
-            if (state.status == AuthenticateUserStateStatus.loadedSuccess) {
-              return const SafeArea(
-                child: Stack(children: [
-                  Positioned(
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      bottom: 0,
-                      child: Center(child: Text('Welcome!')))
-                ]),
-              );
-            } else if (state.status ==
-                AuthenticateUserStateStatus.loadedFailed) {
-              return Container(color: Colors.red);
-            } else {
-              return const SizedBox();
-            }
-          },
-        ),
-        BlocListener<AuthenticateUserBloc, AuthenticateUserState>(
-          listenWhen: (previous, current) {
-            return current.status == AuthenticateUserStateStatus.showLoading ||
-                current.status == AuthenticateUserStateStatus.hideLoading;
-          },
-          listener: (_, state) {
-            switch (state.status) {
-              case AuthenticateUserStateStatus.showLoading:
-                _handleLoadingData(true);
-                break;
-              case AuthenticateUserStateStatus.hideLoading:
-                _handleLoadingData(false);
-                break;
-              default:
-            }
-          },
-          child: _widgetLoading(_isLoading),
-        ),
-      ],
     );
   }
 
@@ -245,7 +257,9 @@ class _AuthenticateUserPageState extends State<AuthenticateUserPage> {
     });
   }
 
-  // void _fetchAuthenticateUserData() {
-  //   _bloc.add(EventFetchAuthenticateUser(id: 'xxx'));
-  // }
+  void _fetchAuthenticateUserData(
+      String username, String password, bool isGuest) {
+    _bloc.add(EventFetchAuthenticateUser(
+        username: username, password: password, loginasGuest: isGuest));
+  }
 }

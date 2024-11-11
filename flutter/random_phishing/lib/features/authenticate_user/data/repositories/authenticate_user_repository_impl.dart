@@ -11,13 +11,20 @@ import 'package:random_phishing/features/authenticate_user/domain/usecases/fetch
 class AuthenticateUserRepositoryImpl implements AuthenticateUserRepository {
   AuthenticateUserRemoteDataSource authenticateUserRemoteDataSource;
 
-  AuthenticateUserRepositoryImpl({required this.authenticateUserRemoteDataSource});
+  AuthenticateUserRepositoryImpl(
+      {required this.authenticateUserRemoteDataSource});
 
   @override
-  Future<Either<Failure, AuthenticateUserEntity>> fetchAuthenticateUser({required FetchAuthenticateUserParam params}) async {
+  Future<Either<Failure, AuthenticateUserEntity>> fetchAuthenticateUser(
+      {required FetchAuthenticateUserParam params}) async {
     try {
-      var _response = await authenticateUserRemoteDataSource.fetchAuthenticateUser(username: params.username, password: params.password, isGuest: params.isLoginAsGuest);
-      return Right(_mapPDResponseToEntity(response: _response));
+      var _response =
+          await authenticateUserRemoteDataSource.fetchAuthenticateUser(
+              username: params.username,
+              password: params.password,
+              isGuest: params.isLoginAsGuest);
+      return _response.fold((failure) => Left(ServerFailure("")),
+          (data) => Right(_mapPDResponseToEntity(response: data)));
     } on ServerException {
       return Left(ServerFailure(""));
     } catch (e) {
@@ -25,7 +32,8 @@ class AuthenticateUserRepositoryImpl implements AuthenticateUserRepository {
     }
   }
 
-  AuthenticateUserEntity _mapPDResponseToEntity({required AuthenticateUserResponse response}) {
+  AuthenticateUserEntity _mapPDResponseToEntity(
+      {required AuthenticateUserResponse response}) {
     return AuthenticateUserEntity(
       username: response.username,
       role: response.role,

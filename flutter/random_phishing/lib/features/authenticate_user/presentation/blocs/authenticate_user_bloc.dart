@@ -12,12 +12,27 @@ part 'authenticate_user_state.dart';
 
 class AuthenticateUserBloc
     extends Bloc<AuthenticateUserEvent, AuthenticateUserState> {
-  final FetchAuthenticateUserUseCase fetchAuthenticateUserUseCase;
+  late final FetchAuthenticateUserUseCase fetchAuthenticateUserUseCase;
 
   AuthenticateUserBloc(
       {required FetchAuthenticateUserUseCase fetchAuthenticateUserUseCase})
-      : this.fetchAuthenticateUserUseCase = fetchAuthenticateUserUseCase,
-        super(AuthenticateUserState(status: AuthenticateUserStateStatus.init, role: AuthenticateUserRole.guest, errorMessage: ""));
+      : super(AuthenticateUserState(
+            status: AuthenticateUserStateStatus.init,
+            role: AuthenticateUserRole.admin,
+            errorMessage: "asasaas")) {
+    this.fetchAuthenticateUserUseCase = fetchAuthenticateUserUseCase;
+    on<EventFetchAuthenticateUser>((event, emit) async {
+      // Stream<AuthenticateUserState> res = _handleFetchPD(event);
+      // print(res.last);
+      await for (final newState in _handleFetchPD(event)) {
+        // Emit the new state after handling the event
+        emit(newState);
+
+        // Log the new state after it has been emitted
+        print('New State after emit: ${newState.toString()}');
+      }
+    });
+  }
 
   @override
   Stream<AuthenticateUserState> mapEventToState(
@@ -29,18 +44,22 @@ class AuthenticateUserBloc
 
   Stream<AuthenticateUserState> _handleFetchPD(
       EventFetchAuthenticateUser event) async* {
-    yield state.copyWith(status: AuthenticateUserStateStatus.showLoading);
+    print('State1: ${state.toString()}');
+    // yield state.copyWith(status: AuthenticateUserStateStatus.showLoading);
     final result = await fetchAuthenticateUserUseCase(
         FetchAuthenticateUserParam(
-          username: event.username, 
-          password: event.password, 
-          isLoginAsGuest: event.loginasGuest));
+            username: event.username,
+            password: event.password,
+            isLoginAsGuest: event.loginasGuest));
     yield state.copyWith(status: AuthenticateUserStateStatus.hideLoading);
     yield result.fold(
         (failure) => state.copyWith(
             status: AuthenticateUserStateStatus.loadedFailed,
             errorMessage: 'Có lỗi xảy ra. Vui lòng thử lại.'),
         (data) => state.copyWith(
-            status: AuthenticateUserStateStatus.loadedSuccess, role: AuthenticateUserState.mapAuthenticateCodeToRole[data.role] ?? AuthenticateUserRole.guest));
+            status: AuthenticateUserStateStatus.loadedSuccess,
+            role: AuthenticateUserState.mapAuthenticateCodeToRole[data.role] ??
+                AuthenticateUserRole.guest));
+    print('State2: ${state.toString()}');
   }
 }

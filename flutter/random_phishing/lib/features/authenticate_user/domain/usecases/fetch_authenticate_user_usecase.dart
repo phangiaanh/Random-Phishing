@@ -7,13 +7,15 @@ import 'package:random_phishing/core/usecases/usecase.dart';
 import 'package:random_phishing/features/authenticate_user/domain/entities/authenticate_user_entity.dart';
 import 'package:random_phishing/features/authenticate_user/domain/repositories/authenticate_user_repository.dart';
 
-class FetchAuthenticateUserUseCase extends UseCase<AuthenticateUserEntity, FetchAuthenticateUserParam> {
+class FetchAuthenticateUserUseCase
+    extends UseCase<AuthenticateUserEntity, FetchAuthenticateUserParam> {
   final AuthenticateUserRepository repository;
 
   FetchAuthenticateUserUseCase(this.repository);
 
   @override
-  Future<Either<Failure, AuthenticateUserEntity>> call(FetchAuthenticateUserParam params) async {
+  Future<Either<Failure, AuthenticateUserEntity>> call(
+      FetchAuthenticateUserParam params) async {
     return await repository.fetchAuthenticateUser(params: params);
   }
 }
@@ -21,6 +23,9 @@ class FetchAuthenticateUserUseCase extends UseCase<AuthenticateUserEntity, Fetch
 class FetchAuthenticateUserParam {
   String username;
   String password;
-  Bool isLoginAsGuest;
-  FetchAuthenticateUserParam({required this.username, required this.password, required this.isLoginAsGuest});
+  bool isLoginAsGuest;
+  FetchAuthenticateUserParam(
+      {required this.username,
+      required this.password,
+      required this.isLoginAsGuest});
 }
