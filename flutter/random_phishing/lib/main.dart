@@ -18,8 +18,7 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp.router(
       theme: ThemeData(
           useMaterial3: true,
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.red)
-        ),
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.red)),
       title: 'PhishTank',
       debugShowCheckedModeBanner: false,
       routerConfig: MyAppRouterConfig().router,

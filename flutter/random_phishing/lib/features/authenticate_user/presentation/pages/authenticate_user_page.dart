@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,6 +20,8 @@ class AuthenticateUserPage extends StatefulWidget {
 class _AuthenticateUserPageState extends State<AuthenticateUserPage> {
   bool _isLoading = false;
   bool isLogin = false;
+  bool _isUserEmpty = false;
+  bool _isPassEmpty = false;
   late AuthenticateUserBloc _bloc;
 
   @override
@@ -74,6 +78,73 @@ class _AuthenticateUserPageState extends State<AuthenticateUserPage> {
   }
 
   Widget _buildLogin(BuildContext context) {
+    if (isLogin) {
+      TextEditingController _inputUserController = TextEditingController();
+      TextEditingController _inputPassController = TextEditingController();
+      return Dialog(
+        backgroundColor: Colors.transparent, // Transparent background
+        child: Stack(
+          children: [
+            // Apply a blur effect to the background
+            Positioned.fill(
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+                child: Container(color: Colors.black.withOpacity(0)),
+              ),
+            ),
+            // Your login form (in the center)
+            Center(
+              child: Container(
+                width: 500,
+                // padding: EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  // color: Colors.white,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    TextField(
+                      controller: _inputUserController,
+                      decoration: InputDecoration(
+                          icon: Icon(Icons.verified_user),
+                          labelText: "Username",
+                          errorText:
+                              _isUserEmpty ? "Username can't be empty" : null),
+                    ),
+                    TextField(
+                      controller: _inputPassController,
+                      obscureText: true,
+                      decoration: InputDecoration(
+                          icon: Icon(Icons.password),
+                          labelText: "Password",
+                          errorText:
+                              _isPassEmpty ? "Password can't be empty" : null),
+                    ),
+                    SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: () {
+                        // Handle login action
+                        setState(() {
+                          _isUserEmpty = _inputUserController.text.isEmpty;
+                          _isPassEmpty = _inputPassController.text.isEmpty;
+                        });
+                      },
+                      child: Text("Login"),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    } else {
+      return chooseLoginMethod();
+    }
+  }
+
+  Center chooseLoginMethod() {
     return Center(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
