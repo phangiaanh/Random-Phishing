@@ -28,8 +28,9 @@ class _AuthenticateUserPageState extends State<AuthenticateUserPage> {
 
   @override
   void initState() {
-    _bloc = AuthenticateUserBloc(
-        fetchAuthenticateUserUseCase: fetchAuthenticateUserUseCase);
+    // _bloc = AuthenticateUserBloc(
+    //     fetchAuthenticateUserUseCase: fetchAuthenticateUserUseCase);
+    _bloc = context.read<AuthenticateUserBloc>();
     // _fetchAuthenticateUserData();
     super.initState();
   }
@@ -139,44 +140,55 @@ class _AuthenticateUserPageState extends State<AuthenticateUserPage> {
                               _isPassEmpty ? "Password can't be empty" : null),
                     ),
                     SizedBox(height: 20),
-                    BlocBuilder<AuthenticateUserBloc, AuthenticateUserState>(
-                      buildWhen: (previous, current) {
-                        print(previous.status);
+                    BlocListener<AuthenticateUserBloc, AuthenticateUserState>(
+                      listenWhen: (previous, current) {
                         return current.status ==
-                                AuthenticateUserStateStatus.loadedSuccess ||
-                            current.status ==
-                                AuthenticateUserStateStatus.loadedFailed ||
-                            previous.status == AuthenticateUserStateStatus.init;
+                            AuthenticateUserStateStatus.loadedSuccess;
                       },
-                      builder: (_, state) {
+                      listener: (_, state) {
                         if (state.status ==
                             AuthenticateUserStateStatus.loadedSuccess) {
-                          return const SafeArea(
-                            child: Stack(children: [
-                              Positioned(
-                                  top: 0,
-                                  left: 0,
-                                  right: 0,
-                                  bottom: 0,
-                                  child: Center(child: Text('Welcome!')))
-                            ]),
-                          );
-                        } else if (state.status ==
-                            AuthenticateUserStateStatus.loadedFailed) {
-                          _isValidUserPass = false;
-                        }
-                        if (_isValidUserPass) {
-                          return SizedBox.shrink();
-                        } else {
-                          return Center(
-                            child: Text(
-                              "Invalid User or Password",
-                              style: TextStyle(color: Colors.blue),
-                            ),
-                          );
+                          context.push(ConstParameters.HomePage);
                         }
                       },
+                      child: BlocBuilder<AuthenticateUserBloc,
+                          AuthenticateUserState>(
+                        buildWhen: (previous, current) {
+                          return current.status ==
+                                  AuthenticateUserStateStatus.loadedFailed ||
+                              previous.status ==
+                                  AuthenticateUserStateStatus.init;
+                        },
+                        builder: (_, state) {
+                          if (state.status ==
+                              AuthenticateUserStateStatus.loadedFailed) {
+                            _isValidUserPass = false;
+                          }
+                          if (_isValidUserPass) {
+                            return SizedBox.shrink();
+                          } else {
+                            return Center(
+                              child: Text(
+                                "Invalid User or Password",
+                                style: TextStyle(color: Colors.blue),
+                              ),
+                            );
+                          }
+                        },
+                      ),
                     ),
+                    // BlocListener<AuthenticateUserBloc, AuthenticateUserState>(
+                    // listenWhen: (previous, current) {
+                    //   return current.status ==
+                    //       AuthenticateUserStateStatus.loadedSuccess;
+                    // },
+                    // listener: (_, state) {
+                    //   if (state.status ==
+                    //       AuthenticateUserStateStatus.loadedSuccess) {
+                    //     // context.go(ConstParameters.HomePage);
+                    //   }
+                    // },
+                    // ),
                     SizedBox(height: 20),
                     ElevatedButton(
                       onPressed: () {
@@ -229,6 +241,7 @@ class _AuthenticateUserPageState extends State<AuthenticateUserPage> {
               ElevatedButton(
                 onPressed: () {
                   _fetchAuthenticateUserData("", "", true);
+                  context.push(ConstParameters.HomePage);
                 },
                 child: Text('Continue as Guest'),
               ),

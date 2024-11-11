@@ -20,12 +20,19 @@ class AuthenticateUserState extends Equatable {
   final String errorMessage;
 
   static Map mapAuthenticateCodeToRole = {
-    "guest": AuthenticateUserRole.guest,
-    "user": AuthenticateUserRole.user,
-    "admin": AuthenticateUserRole.admin,
+    DefinedRole.RoleGuest: AuthenticateUserRole.guest,
+    DefinedRole.RoleUser: AuthenticateUserRole.user,
+    DefinedRole.RoleAdmin: AuthenticateUserRole.admin,
   };
 
-  AuthenticateUserState({required this.status,required this.role,required this.errorMessage});
+  static Map mapAuthenticateRoleToCode = {
+    AuthenticateUserRole.guest: DefinedRole.RoleGuest,
+    AuthenticateUserRole.user: DefinedRole.RoleUser,
+    AuthenticateUserRole.admin: DefinedRole.RoleAdmin,
+  };
+
+  AuthenticateUserState(
+      {required this.status, required this.role, required this.errorMessage});
 
   AuthenticateUserState copyWith(
           {AuthenticateUserStateStatus status =
@@ -38,5 +45,9 @@ class AuthenticateUserState extends Equatable {
           errorMessage: errorMessage ?? this.errorMessage);
 
   @override
-  List<Object> get props => [status ?? AuthenticateUserStateStatus.init, role ?? AuthenticateUserRole.guest, errorMessage ?? ""];
+  List<Object> get props => [
+        status ?? AuthenticateUserStateStatus.init,
+        role ?? AuthenticateUserRole.guest,
+        errorMessage ?? ""
+      ];
 }

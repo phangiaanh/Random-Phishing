@@ -4,6 +4,7 @@ import 'dart:ffi';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:random_phishing/core/utils/const/const.dart';
 import 'package:random_phishing/features/authenticate_user/domain/entities/authenticate_user_entity.dart';
 import 'package:random_phishing/features/authenticate_user/domain/usecases/fetch_authenticate_user_usecase.dart';
 
@@ -51,7 +52,7 @@ class AuthenticateUserBloc
             username: event.username,
             password: event.password,
             isLoginAsGuest: event.loginasGuest));
-    yield state.copyWith(status: AuthenticateUserStateStatus.hideLoading);
+    // yield state.copyWith(status: AuthenticateUserStateStatus.hideLoading);
     yield result.fold(
         (failure) => state.copyWith(
             status: AuthenticateUserStateStatus.loadedFailed,
