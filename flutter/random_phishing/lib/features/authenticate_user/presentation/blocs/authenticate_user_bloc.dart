@@ -35,14 +35,6 @@ class AuthenticateUserBloc
     });
   }
 
-  @override
-  Stream<AuthenticateUserState> mapEventToState(
-      AuthenticateUserEvent event) async* {
-    if (event is EventFetchAuthenticateUser) {
-      yield* _handleFetchPD(event);
-    }
-  }
-
   Stream<AuthenticateUserState> _handleFetchPD(
       EventFetchAuthenticateUser event) async* {
     print('State1: ${state.toString()}');
