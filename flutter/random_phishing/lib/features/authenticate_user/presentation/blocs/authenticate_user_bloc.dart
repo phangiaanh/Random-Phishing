@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:ffi';
+//import 'dart:ffi';
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
@@ -30,14 +30,13 @@ class AuthenticateUserBloc
         emit(newState);
 
         // Log the new state after it has been emitted
-        print('New State after emit: ${newState.toString()}');
+        print('Role State: ${newState.toString()}');
       }
     });
   }
 
   Stream<AuthenticateUserState> _handleFetchPD(
       EventFetchAuthenticateUser event) async* {
-    print('State1: ${state.toString()}');
     // yield state.copyWith(status: AuthenticateUserStateStatus.showLoading);
     final result = await fetchAuthenticateUserUseCase(
         FetchAuthenticateUserParam(
@@ -53,6 +52,5 @@ class AuthenticateUserBloc
             status: AuthenticateUserStateStatus.loadedSuccess,
             role: AuthenticateUserState.mapAuthenticateCodeToRole[data.role] ??
                 AuthenticateUserRole.guest));
-    print('State2: ${state.toString()}');
   }
 }

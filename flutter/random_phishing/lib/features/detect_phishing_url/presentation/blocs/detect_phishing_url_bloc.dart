@@ -28,7 +28,7 @@ class DetectPhishingUrlBloc
         emit(newState);
 
         // Log the new state after it has been emitted
-        print('New State after emit: ${newState.toString()}');
+        print('Phishing State: ${newState.toString()}');
       }
     });
   }
@@ -44,7 +44,10 @@ class DetectPhishingUrlBloc
             status: DetectPhishingUrlStateStatus.loadedFailed,
             errorMessage: 'Có lỗi xảy ra. Vui lòng thử lại.'),
         (data) => state.copyWith(
-            status: DetectPhishingUrlStateStatus.loadedSuccess,
-            detectTurn: data.detectTurn));
+            status: data.isPhishing
+                ? DetectPhishingUrlStateStatus.loadedFailed
+                : DetectPhishingUrlStateStatus.loadedSuccess,
+            detectTurn: data.detectTurn,
+            errorMessage: data.reasons[0]));
   }
 }

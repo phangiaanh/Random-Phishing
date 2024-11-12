@@ -31,10 +31,10 @@ class DataSourceUser {
 class PermissionNavigationByRole {
   static Map role = {
     DefinedRole.RoleAdmin: [
-      {"icon": Icon(Icons.security_sharp), "label": Text('Phishing Detector')},
+      // {"icon": Icon(Icons.security_sharp), "label": Text('Phishing Detector')},
+      {"icon": Icon(Icons.verified_user_sharp), "label": Text('User Manager')},
       {"icon": Icon(Icons.history_sharp), "label": Text('Phishing History')},
       {"icon": Icon(Icons.model_training_sharp), "label": Text('Model')},
-      {"icon": Icon(Icons.verified_user_sharp), "label": Text('User Manager')},
       {"icon": Icon(Icons.logout_sharp), "label": Text('Logout')},
     ],
     DefinedRole.RoleGuest: [

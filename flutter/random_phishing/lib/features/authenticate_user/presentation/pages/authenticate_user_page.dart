@@ -1,4 +1,4 @@
-import 'dart:ffi';
+//import 'dart:ffi';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -86,7 +86,6 @@ class _AuthenticateUserPageState extends State<AuthenticateUserPage> {
       TextEditingController _inputUserController = TextEditingController();
       TextEditingController _inputPassController = TextEditingController();
 
-      print(_isValidUserPass);
       Widget checkUserPass;
       if (_isValidUserPass) {
         checkUserPass = SizedBox.shrink();
