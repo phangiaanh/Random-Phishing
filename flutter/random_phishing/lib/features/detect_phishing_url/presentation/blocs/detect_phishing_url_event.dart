@@ -7,8 +7,9 @@ abstract class DetectPhishingUrlEvent extends Equatable {
 
 class EventFetchDetectPhishingUrl extends DetectPhishingUrlEvent {
   final String url;
+  final String role;
 
-  EventFetchDetectPhishingUrl({required this.url});
+  EventFetchDetectPhishingUrl({required this.url, required this.role});
 
   @override
   List<Object> get props => [url];

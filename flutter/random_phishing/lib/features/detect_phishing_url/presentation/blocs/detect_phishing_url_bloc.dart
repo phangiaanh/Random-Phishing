@@ -37,7 +37,7 @@ class DetectPhishingUrlBloc
       EventFetchDetectPhishingUrl event) async* {
     yield state.copyWith(status: DetectPhishingUrlStateStatus.showLoading);
     final result = await fetchDetectPhishingUrlUseCase(
-        FetchDetectPhishingUrlParam(url: event.url));
+        FetchDetectPhishingUrlParam(url: event.url, role: event.role));
     yield state.copyWith(status: DetectPhishingUrlStateStatus.hideLoading);
     yield result.fold(
         (failure) => state.copyWith(

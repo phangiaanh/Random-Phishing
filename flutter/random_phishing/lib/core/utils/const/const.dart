@@ -16,6 +16,11 @@ class DefinedRole {
   static String RoleGuest = "guest";
 }
 
+class DefinedReasons {
+  static String httpsReason = "https protocol";
+  static String protocolReason = "not https protocol";
+}
+
 class DataSourceUser {
   static Map user = {
     "watermelon_admin": {"pass": "Bachkhoamt", "role": "admin"},

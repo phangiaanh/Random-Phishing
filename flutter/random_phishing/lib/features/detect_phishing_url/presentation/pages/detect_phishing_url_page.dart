@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:random_phishing/features/authenticate_user/presentation/blocs/authenticate_user_bloc.dart';
 import 'package:random_phishing/features/detect_phishing_url/di/detect_phishing_url_injector.dart';
 import 'package:random_phishing/features/detect_phishing_url/presentation/blocs/detect_phishing_url_bloc.dart';
 
@@ -14,9 +15,11 @@ class DetectPhishingUrlPage extends StatefulWidget {
 class _DetectPhishingUrlPageState extends State<DetectPhishingUrlPage> {
   bool _isLoading = false;
   late DetectPhishingUrlBloc _bloc;
+  late AuthenticateUserBloc _roleBloc;
 
   @override
   void initState() {
+    _roleBloc = context.read<AuthenticateUserBloc>();
     _bloc = DetectPhishingUrlBloc(
         fetchDetectPhishingUrlUseCase: fetchDetectPhishingUrlUseCase);
     // _fetchDetectPhishingUrlData();
@@ -111,6 +114,9 @@ class _DetectPhishingUrlPageState extends State<DetectPhishingUrlPage> {
   }
 
   void _fetchDetectPhishingUrlData(String url) {
-    _bloc.add(EventFetchDetectPhishingUrl(url: url));
+    _bloc.add(EventFetchDetectPhishingUrl(
+        url: url,
+        role: AuthenticateUserState
+            .mapAuthenticateRoleToCode[_roleBloc.state.role]));
   }
 }
