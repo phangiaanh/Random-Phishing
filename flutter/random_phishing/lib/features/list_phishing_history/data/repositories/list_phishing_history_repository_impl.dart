@@ -8,27 +8,39 @@ import 'package:random_phishing/features/list_phishing_history/domain/entities/l
 import 'package:random_phishing/features/list_phishing_history/domain/repositories/list_phishing_history_repository.dart';
 import 'package:random_phishing/features/list_phishing_history/domain/usecases/fetch_list_phishing_history_usecase.dart';
 
-class ListPhishingHistoryRepositoryImpl implements ListPhishingHistoryRepository {
+class ListPhishingHistoryRepositoryImpl
+    implements ListPhishingHistoryRepository {
   ListPhishingHistoryRemoteDataSource listPhishingHistoryRemoteDataSource;
 
-  ListPhishingHistoryRepositoryImpl({@required this.listPhishingHistoryRemoteDataSource});
+  ListPhishingHistoryRepositoryImpl(
+      {required this.listPhishingHistoryRemoteDataSource});
 
   @override
-  Future<Either<Failure, ListPhishingHistoryEntity>> fetchListPhishingHistory({@required FetchListPhishingHistoryParam params}) async {
+  Future<Either<Failure, ListPhishingHistoryEntity>> fetchListPhishingHistory(
+      {required FetchListPhishingHistoryParam params}) async {
     try {
-      var _response = await listPhishingHistoryRemoteDataSource.fetchListPhishingHistory(id: params.id);
-      return Right(_mapPDResponseToEntity(response: _response));
+      var _response = await listPhishingHistoryRemoteDataSource
+          .fetchListPhishingHistory(username: params.username);
+      return _response.fold((l) => Left(ServerFailure("")),
+          (data) => Right(_mapPDResponseToEntity(response: data)));
     } on ServerException {
-      return Left(ServerFailure());
+      return Left(ServerFailure(""));
     } catch (e) {
-      return Left(ServerFailure());
+      return Left(ServerFailure(""));
     }
   }
 
-  ListPhishingHistoryEntity _mapPDResponseToEntity({@required ListPhishingHistoryResponse response}) {
+  ListPhishingHistoryEntity _mapPDResponseToEntity(
+      {required ListPhishingHistoryResponse response}) {
     return ListPhishingHistoryEntity(
-      id: response.id,
-      name: response.name,
+      list: [
+        for (var x in response.list)
+          PhishingHistoryItem(
+              username: x.username,
+              url: x.url,
+              isPhishing: x.isPhishing,
+              time: x.time)
+      ],
     );
   }
 }

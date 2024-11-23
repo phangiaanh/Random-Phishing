@@ -1,31 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
+import 'package:random_phishing/core/utils/const/const.dart';
+import 'package:random_phishing/features/authenticate_user/presentation/blocs/authenticate_user_bloc.dart';
 import 'package:random_phishing/features/list_phishing_history/di/list_phishing_history_injector.dart';
+import 'package:random_phishing/features/list_phishing_history/domain/entities/list_phishing_history_entity.dart';
 import 'package:random_phishing/features/list_phishing_history/presentation/blocs/list_phishing_history_bloc.dart';
 
 class ListPhishingHistoryPage extends StatefulWidget {
-  const ListPhishingHistoryPage({Key key, this.arguments}) : super(key: key);
-  final Map<String, dynamic> arguments;
+  const ListPhishingHistoryPage() : super();
 
   @override
-  _ListPhishingHistoryPageState createState() => _ListPhishingHistoryPageState();
+  _ListPhishingHistoryPageState createState() =>
+      _ListPhishingHistoryPageState();
 }
 
 class _ListPhishingHistoryPageState extends State<ListPhishingHistoryPage> {
-  bool _isLoading = false;
-  ListPhishingHistoryBloc _bloc;
+  late ListPhishingHistoryBloc _bloc;
+  late AuthenticateUserBloc _roleBloc;
 
   @override
   void initState() {
-    _bloc = ListPhishingHistoryBloc(fetchListPhishingHistoryUseCase: fetchListPhishingHistoryUseCase);
-    _fetchListPhishingHistoryData();
+    _bloc = ListPhishingHistoryBloc(
+        fetchListPhishingHistoryUseCase: fetchListPhishingHistoryUseCase);
+    _roleBloc = context.read<AuthenticateUserBloc>();
+    // _fetchListPhishingHistoryData();
     super.initState();
   }
 
   @override
   void dispose() {
-    _bloc = null;
     super.dispose();
   }
 
@@ -33,77 +38,108 @@ class _ListPhishingHistoryPageState extends State<ListPhishingHistoryPage> {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => _bloc,
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        appBar: AppBar(title: Text('App bar')),
-        body: _buildBody(),
-      ),
+      child: _buildBody(),
     );
   }
 
   Widget _buildBody() {
-    return Stack(
-      children: [
-        BlocBuilder<ListPhishingHistoryBloc, ListPhishingHistoryState>(
-          buildWhen: (previous, current) {
-            return current.status == ListPhishingHistoryStateStatus.loadedSuccess ||
-                current.status == ListPhishingHistoryStateStatus.loadedFailed;
-          },
-          builder: (_, state) {
-            if (state.status == ListPhishingHistoryStateStatus.loadedSuccess) {
-              return SafeArea(
-                child: Stack(
-                  children: [Positioned(top: 0, left: 0, right: 0, bottom: 0, child: Center(child: Text('Welcome!')))
-                  ]
+    _fetchListPhishingHistoryData();
+    return BlocBuilder<ListPhishingHistoryBloc, ListPhishingHistoryState>(
+      buildWhen: (previous, current) {
+        return current.status == ListPhishingHistoryStateStatus.loadedSuccess;
+      },
+      builder: (context, state) {
+        return ListView.separated(
+            padding: const EdgeInsets.all(8),
+            separatorBuilder: (BuildContext context, int index) =>
+                const Divider(),
+            itemCount: state.detail.list.length,
+            itemBuilder: (BuildContext context, int index) {
+              return Container(
+                height: 50,
+                decoration: BoxDecoration(
+                  // border: Border.all(color: Colors.white),
+                  // color: state.detail.list[index].isPhishing
+                  //     ? Colors.red
+                  //     : Colors.green,
+                  borderRadius: BorderRadius.circular(20),
                 ),
+                child: Row(children: [
+                  SizedBox(width: 5),
+                  Container(
+                    padding: const EdgeInsets.all(5.0),
+                    height: 40,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.white),
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: FittedBox(
+                      child: Text(
+                        "${DateFormat('yyyy-MM-dd – kk:mm').format(state.detail.list[index].time)}",
+                        style: TextStyle(
+                            fontSize: 13, fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 5),
+                  Container(
+                    padding: const EdgeInsets.all(5.0),
+                    height: 40,
+                    decoration: BoxDecoration(
+                      // border: Border.all(color: Colors.white),
+                      color: state.detail.list[index].isPhishing
+                          ? Colors.red
+                          : Colors.green,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: FittedBox(
+                      child: Text("${state.detail.list[index].url}",
+                          style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white)),
+                    ),
+                  ),
+                  SizedBox(width: 5),
+                  (_roleBloc.state.role == AuthenticateUserRole.admin)
+                      ? Container(
+                          padding: const EdgeInsets.all(5.0),
+                          height: 40,
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                                color: DataSourceUser.user.containsKey(
+                                        state.detail.list[index].username)
+                                    ? DataSourceUser.user[state
+                                        .detail.list[index].username]["color"]
+                                    : Colors.black),
+                            color: DataSourceUser.user.containsKey(
+                                    state.detail.list[index].username)
+                                ? DataSourceUser
+                                        .user[state.detail.list[index].username]
+                                    ["color"]
+                                : Colors.black,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: FittedBox(
+                            child: Text(
+                              "${DataSourceUser.user.containsKey(state.detail.list[index].username) ? state.detail.list[index].username : "anonymous"}",
+                              style: TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.white),
+                            ),
+                          ),
+                        )
+                      : SizedBox.shrink()
+                ]),
               );
-            } else if (state.status == ListPhishingHistoryStateStatus.loadedFailed) {
-              return Container(color: Colors.red);
-            } else {
-              return const SizedBox();
-            }
-          },
-        ),
-        BlocListener<ListPhishingHistoryBloc, ListPhishingHistoryState>(
-          listenWhen: (previous, current) {
-            return current.status == ListPhishingHistoryStateStatus.showLoading || current.status == ListPhishingHistoryStateStatus.hideLoading;
-          },
-          listener: (_, state) {
-            switch (state.status) {
-              case ListPhishingHistoryStateStatus.showLoading:
-                _handleLoadingData(true);
-                break;
-              case ListPhishingHistoryStateStatus.hideLoading:
-                _handleLoadingData(false);
-                break;
-              default:
-            }
-          },
-          child: _widgetLoading(_isLoading),
-        ),
-      ],
+            });
+      },
     );
   }
 
-  Widget _widgetLoading(bool isLoading) {
-    if (isLoading) {
-      return Positioned.fill(
-        child: Container(
-          color: Colors.transparent,
-          child: Center(child: Text('Loading...')),
-        ),
-      );
-    }
-    return const SizedBox();
-  }
-
-  void _handleLoadingData(bool loading) {
-      setState(() {
-        _isLoading = loading;
-      });
-  }
-
   void _fetchListPhishingHistoryData() {
-    _bloc?.add(EventFetchListPhishingHistory(id: 'xxx'));
+    _bloc.add(EventFetchListPhishingHistory(username: _roleBloc.state.user));
   }
 }

@@ -8,8 +8,10 @@ abstract class DetectPhishingUrlEvent extends Equatable {
 class EventFetchDetectPhishingUrl extends DetectPhishingUrlEvent {
   final String url;
   final String role;
+  final String user;
 
-  EventFetchDetectPhishingUrl({required this.url, required this.role});
+  EventFetchDetectPhishingUrl(
+      {required this.url, required this.role, required this.user});
 
   @override
   List<Object> get props => [url];

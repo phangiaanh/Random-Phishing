@@ -6,10 +6,10 @@ abstract class ListPhishingHistoryEvent extends Equatable {
 }
 
 class EventFetchListPhishingHistory extends ListPhishingHistoryEvent {
-  final String id;
+  final String username;
 
-  EventFetchListPhishingHistory({@required this.id});
+  EventFetchListPhishingHistory({required this.username});
 
   @override
-  List<Object> get props => [id];
+  List<Object> get props => [username];
 }

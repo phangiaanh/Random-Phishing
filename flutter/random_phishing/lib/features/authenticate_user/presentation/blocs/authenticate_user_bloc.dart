@@ -18,6 +18,7 @@ class AuthenticateUserBloc
   AuthenticateUserBloc(
       {required FetchAuthenticateUserUseCase fetchAuthenticateUserUseCase})
       : super(AuthenticateUserState(
+            user: "anonymous",
             status: AuthenticateUserStateStatus.init,
             role: AuthenticateUserRole.admin,
             errorMessage: "asasaas")) {
@@ -47,10 +48,12 @@ class AuthenticateUserBloc
     yield result.fold(
         (failure) => state.copyWith(
             status: AuthenticateUserStateStatus.loadedFailed,
+            user: "anonymous",
             errorMessage: 'Có lỗi xảy ra. Vui lòng thử lại.'),
         (data) => state.copyWith(
             status: AuthenticateUserStateStatus.loadedSuccess,
             role: AuthenticateUserState.mapAuthenticateCodeToRole[data.role] ??
-                AuthenticateUserRole.guest));
+                AuthenticateUserRole.guest,
+            user: event.username));
   }
 }

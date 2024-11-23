@@ -19,5 +19,5 @@ class PhishingHistoryItem extends Equatable {
       required this.time});
 
   @override
-  List<Object> get props => [url];
+  List<Object> get props => [url, username, isPhishing, time];
 }

@@ -18,8 +18,9 @@ class DetectPhishingUrlRepositoryImpl implements DetectPhishingUrlRepository {
   Future<Either<Failure, DetectPhishingUrlEntity>> fetchDetectPhishingUrl(
       {required FetchDetectPhishingUrlParam params}) async {
     try {
-      var _response = await detectPhishingUrlRemoteDataSource
-          .fetchDetectPhishingUrl(url: params.url, role: params.role);
+      var _response =
+          await detectPhishingUrlRemoteDataSource.fetchDetectPhishingUrl(
+              url: params.url, role: params.role, user: params.user);
       return _response.fold((l) => Left(ServerFailure("")),
           (data) => Right(_mapPDResponseToEntity(response: data)));
     } on ServerException {

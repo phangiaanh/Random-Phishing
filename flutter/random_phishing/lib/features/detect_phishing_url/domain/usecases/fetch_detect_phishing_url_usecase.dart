@@ -19,7 +19,9 @@ class FetchDetectPhishingUrlUseCase
 }
 
 class FetchDetectPhishingUrlParam {
+  String user;
   String url;
   String role;
-  FetchDetectPhishingUrlParam({required this.url, required this.role});
+  FetchDetectPhishingUrlParam(
+      {required this.url, required this.role, required this.user});
 }

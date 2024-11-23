@@ -43,22 +43,22 @@ class _DetectPhishingUrlPageState extends State<DetectPhishingUrlPage> {
   }
 
   Widget _buildBody() {
-    Widget page;
-    switch (selectedIndex) {
-      case 0:
-        page = DetectPhishingUrlExtendPage();
-        break;
-      // case 1:
-      //   page = FavoritePage();
-      //   break;
-      default:
-        page = DetectPhishingUrlExtendPage();
-        break;
-      // throw UnimplementedError('no widget for $selectedIndex');
-    }
+    // Widget page;
+    // switch (selectedIndex) {
+    //   case 0:
+    //     page = DetectPhishingUrlExtendPage();
+    //     break;
+    //   // case 1:
+    //   //   page = FavoritePage();
+    //   //   break;
+    //   default:
+    //     page = DetectPhishingUrlExtendPage();
+    //     break;
+    //   // throw UnimplementedError('no widget for $selectedIndex');
+    // }
 
     return LayoutBuilder(builder: (context, constraints) {
-      List<Map<String, StatelessWidget>> listPermissions =
+      List<Map<String, Widget>> listPermissions =
           PermissionNavigationByRole.role[AuthenticateUserState
               .mapAuthenticateRoleToCode[_roleBloc.state.role]];
       return Scaffold(
@@ -77,17 +77,18 @@ class _DetectPhishingUrlPageState extends State<DetectPhishingUrlPage> {
                 onDestinationSelected: (value) {
                   if (value == (listPermissions.length - 1)) {
                     context.pop();
+                  } else {
+                    setState(() {
+                      selectedIndex = value;
+                    });
                   }
-                  setState(() {
-                    selectedIndex = value;
-                  });
                 },
               ),
             ),
             Expanded(
                 child: Container(
               color: Theme.of(context).colorScheme.primaryContainer,
-              child: page,
+              child: listPermissions[selectedIndex]["page"],
             )),
           ],
         ),
@@ -158,7 +159,8 @@ class _DetectPhishingUrlExtendPageState
     _bloc.add(EventFetchDetectPhishingUrl(
         url: url,
         role: AuthenticateUserState
-            .mapAuthenticateRoleToCode[_roleBloc.state.role]));
+            .mapAuthenticateRoleToCode[_roleBloc.state.role],
+        user: _roleBloc.state.user));
   }
 
   @override

@@ -13,13 +13,18 @@ class ListPhishingHistoryState extends Equatable {
   final ListPhishingHistoryEntity detail;
   final String errorMessage;
 
-  ListPhishingHistoryState({this.status, this.detail, this.errorMessage});
+  ListPhishingHistoryState(
+      {required this.status, required this.detail, required this.errorMessage});
 
-  ListPhishingHistoryState copyWith({ListPhishingHistoryStateStatus status, ListPhishingHistoryEntity detail, String errorMessage}) =>
+  ListPhishingHistoryState copyWith(
+          {ListPhishingHistoryStateStatus status =
+              ListPhishingHistoryStateStatus.init,
+          ListPhishingHistoryEntity? detail,
+          String errorMessage = ""}) =>
       ListPhishingHistoryState(
-       status: status ?? this.status,
-       detail: detail ?? this.detail,
-       errorMessage: errorMessage ?? this.errorMessage);
+          status: status ?? this.status,
+          detail: detail ?? this.detail,
+          errorMessage: errorMessage ?? this.errorMessage);
 
   @override
   List<Object> get props => [status ?? '', detail ?? '', errorMessage ?? ''];

@@ -4,5 +4,6 @@ import 'package:random_phishing/features/list_phishing_history/domain/entities/l
 import 'package:random_phishing/features/list_phishing_history/domain/usecases/fetch_list_phishing_history_usecase.dart';
 
 abstract class ListPhishingHistoryRepository {
-  Future<Either<Failure, ListPhishingHistoryEntity>> fetchListPhishingHistory({FetchListPhishingHistoryParam params});
+  Future<Either<Failure, ListPhishingHistoryEntity>> fetchListPhishingHistory(
+      {required FetchListPhishingHistoryParam params});
 }
