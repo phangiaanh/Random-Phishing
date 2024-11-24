@@ -1,0 +1,269 @@
+openapi: 3.0.3
+info:
+  title: Swagger PhishTank - OpenAPI 3.0
+  description: |-
+    This is an Intelligent System project's API specifications.
+    
+    Github link:
+    - [Random Phishing](https://github.com/phangiaanh/Random-Phishing)
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:5678
+tags:
+  - name: Login
+    description: Authenticate API Description
+  - name: History
+    description: Detected Log History Description
+  - name: Detect
+    description: Detect Phishing Request Description
+  - name: User
+    description: Manage User Permissions and Status
+  - name: Model
+    description: Switching Model Description
+paths:
+  /login:
+    post:
+      tags:
+        - Login
+      summary: Login as authenticated user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+        required: true
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '400':
+          description: invalid or inactive user
+  /login/register:
+    post:
+      tags:
+        - Login
+      summary: Request to validate user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '403':
+          description: already existed user
+  /history/{id}:
+    get:
+      tags:
+        - History
+      summary: Get history logs
+      parameters:
+        - name: id
+          in: path
+          description: ID of user
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListPhishingLog'
+        '404':
+          description: id does not exist
+  /detect/{id}:
+    post:
+      tags:
+        - Detect
+      summary: Request Detect Phishing
+      parameters:
+        - name: id
+          in: path
+          description: ID of user
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestPhishing'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponsePhishing'
+        '404':
+          description: id does not exist
+  /user:
+    get:
+      tags:
+        - User
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: permissions invalid
+  /user/{id}:
+    post:
+      tags:
+        - User
+      summary: Validate user
+      parameters:
+        - name: id
+          in: path
+          description: ID of user
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+        '404':
+          description: id does not exist
+  /model:
+    get:
+      tags:
+        - Model
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Model'
+        '400':
+          description: permissions invalid
+  /model/{id}:
+    post:
+      tags:
+        - Model
+      summary: Choose active model
+      parameters:
+        - name: id
+          in: path
+          description: ID of user
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Model'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+        '404':
+          description: id does not exist
+    
+          
+  
+components:
+  schemas:
+    UserRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          example: "admin"
+        password:
+          type: string
+          example: "password"
+    UserResponse:
+      type: object
+      properties:
+        active:
+          type: integer
+          format: int64
+          example: 1
+    User:
+      type: object
+      properties:
+        username:
+          type: string
+          example: "admin"
+        password:
+          type: string
+          example: "password"
+        role:
+          type: string
+          example: "guest"
+        status:
+          type: integer
+          example: 1
+    PhishingLog:
+      type: object
+      properties:
+        is_phishing:
+          type: boolean
+          example: false
+        time:
+          type: string
+          format: date-time
+        content:
+          type: string
+        reasons:
+          type: array
+          items:
+            type: string
+        user:
+          $ref: '#/components/schemas/User'
+    ListPhishingLog:
+      type: array
+      items:
+        $ref: '#/components/schemas/PhishingLog'
+    RequestPhishing:
+      type: object
+      properties:
+        content:
+          type: string
+          example: "https://google.com.vn"
+    ResponsePhishing:
+      type: object
+      properties:
+        request_time:
+          type: integer
+          example: 6
+        log:
+          $ref: '#/components/schemas/PhishingLog'
+    Model:
+      type: object
+      properties:
+        id: 
+          type: integer
+        name:
+          type: string
+          example: "Random Forest Model version 1.0.0"
+        active:
+          type: boolean
+        
+          
+    
+    

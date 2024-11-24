@@ -1,0 +1,17 @@
+syntax = "proto3";
+package service;
+
+service PhishingDetector {
+    rpc RequestCheckingPhishing(PhishingRequest) returns (ComputationResponse) {}
+}
+
+
+message PhishingRequest {
+    string content = 1;
+}
+
+message ComputationResponse {
+    bool is_phishing = 1;
+    string content = 2;
+    repeated string reason = 3;
+}

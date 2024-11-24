@@ -1,0 +1,1 @@
+python3 -m grpc_tools.protoc -Imodel/service/ --python_out=model/service --pyi_out=model/service --grpc_python_out=model/service model/service/requestphishing.proto
