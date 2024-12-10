@@ -13,7 +13,7 @@ class Predictor():
         processed_url = processed_url.reshape(1, -1)
         print(f"Processed URL: {processed_url}")
         pred = await self.model_inference(processed_url)
-        ## To do code here
+
         return pred
         
     async def model_inference(self, processed_url):
@@ -25,13 +25,11 @@ class Predictor():
         ## To do code here
         return joblib.load(model_path)
     
-# async def main():
-#     model_path = "./model/weights/phishing_model.pkl"
-#     predictor = Predictor(model_path)
-#     url = "htt://www.google.com"
-#     pred = await predictor.predict(url)  # Await the prediction
-#     print(pred)
 
-# # Run the async main function
-# if __name__ == '__main__':
-#     asyncio.run(main())
+# Run the async main function
+if __name__ == '__main__':
+    model_path = "./model/weights/phishing_model.pkl"
+    predictor = Predictor(model_path)
+    url = "htt://www.google.com"
+    pred = predictor.predict(url)  # Await the prediction
+    print(pred)
