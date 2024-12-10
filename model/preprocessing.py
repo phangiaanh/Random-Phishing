@@ -123,7 +123,6 @@ class Preprocessing:
             -1: phishing
         """
         double_slash_index = url.find("//")
-        print(double_slash_index)
         # check URL start with HTTP or HTTPS
         if url.startswith("http://"):
             valid_position = 6

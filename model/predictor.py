@@ -1,7 +1,8 @@
 from preprocessing import Preprocessing
 
 import joblib
-# import asyncio
+import asyncio
+import shap
 
 class Predictor():
     def __init__(self, model_path) -> None:
@@ -13,23 +14,23 @@ class Predictor():
         processed_url = processed_url.reshape(1, -1)
         print(f"Processed URL: {processed_url}")
         pred = await self.model_inference(processed_url)
-
         return pred
         
     async def model_inference(self, processed_url):
         output = self.model.predict(processed_url)
-        ## To do code here
         return output
     
     def load_model(self, model_path):
-        ## To do code here
         return joblib.load(model_path)
     
+# async def pred():
+#     model_path = "../model/weights/phishing_model.pkl"
+#     predictor = Predictor(model_path)
+#     url = "htt://www.google.com"
+#     pred = await predictor.predict(url)  # Await the prediction
+#     print("Result:" ,pred)
 
-# Run the async main function
-if __name__ == '__main__':
-    model_path = "./model/weights/phishing_model.pkl"
-    predictor = Predictor(model_path)
-    url = "htt://www.google.com"
-    pred = predictor.predict(url)  # Await the prediction
-    print(pred)
+
+# # Run the async main function
+# if __name__ == '__main__':
+#     asyncio.run(pred())
