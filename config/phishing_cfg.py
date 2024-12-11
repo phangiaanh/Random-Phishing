@@ -1,9 +1,9 @@
 class DatasetConfig():
-    DATASET_PATH = "./model/data/phishing.csv"  
+    DATASET_PATH = "../model/data/phishing.csv"  
 
 
 class ModelConfig():
-    MODEL_PATH = "./model/weights/phishing_model.pkl"
+    MODEL_PATH = "../model/weights/phishing_model.pkl"
     
     TEST_RATIO = 0.2
     
