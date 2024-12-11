@@ -1,11 +1,12 @@
 from preprocessing import Preprocessing
-
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from config.phishing_cfg import ModelConfig
 import joblib
 import asyncio
-import shap
-
 class Predictor():
-    def __init__(self, model_path) -> None:
+    def __init__(self, model_path=ModelConfig.MODEL_PATH) -> None:
         self.process = Preprocessing()
         self.model = self.load_model(model_path)
     
@@ -23,14 +24,14 @@ class Predictor():
     def load_model(self, model_path):
         return joblib.load(model_path)
     
-# async def pred():
-#     model_path = "../model/weights/phishing_model.pkl"
-#     predictor = Predictor(model_path)
-#     url = "htt://www.google.com"
-#     pred = await predictor.predict(url)  # Await the prediction
-#     print("Result:" ,pred)
+async def pred(url: str):
+    predictor = Predictor()
+    pred = await predictor.predict(url)  # Await the prediction
+    print("Result:" ,pred)
 
 
-# # Run the async main function
-# if __name__ == '__main__':
-#     asyncio.run(pred())
+# Run the async main function
+if __name__ == '__main__':
+    url = "https://www.google.com"
+    asyncio.run(pred(url))
+    

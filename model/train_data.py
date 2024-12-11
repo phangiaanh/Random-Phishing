@@ -22,6 +22,8 @@ class TrainingData():
         self.full_data = pd.read_csv(self.config.DATASET_PATH, usecols=['UsingIP', 'LongURL', 'ShortURL', 'Redirecting//', 'PrefixSuffix-', 'Symbol@', 'SubDomains', 'HTTPS', 'class'])
         x = self.full_data.drop('class', axis=1).values
         y = self.full_data['class'].values
+        print(x)
+        print(y)
         x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=test_ratio, random_state=42)
         return x_train, x_test, y_train, y_test
     
@@ -56,9 +58,9 @@ class TrainingData():
         model_path = self.model_config.MODEL_PATH
         joblib.dump(grid_search.best_estimator_, model_path)
         
-if __name__ == '__main__':
-    train = TrainingData()
-    report, matrix = train.train()
-    print(report)
-    print(matrix)
+# if __name__ == '__main__':
+#     train = TrainingData()
+#     report, matrix = train.train()
+#     print(report)
+#     print(matrix)
         
