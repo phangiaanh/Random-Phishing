@@ -15,6 +15,7 @@ class Predictor():
         processed_url = processed_url.reshape(1, -1)
         print(f"Processed URL: {processed_url}")
         pred = await self.model_inference(processed_url)
+        print("Result: ", pred)
         return pred
         
     async def model_inference(self, processed_url):
@@ -24,14 +25,11 @@ class Predictor():
     def load_model(self, model_path):
         return joblib.load(model_path)
     
-async def pred(url: str):
-    predictor = Predictor()
-    pred = await predictor.predict(url)  # Await the prediction
-    print("Result:" ,pred)
 
 
 # Run the async main function
 if __name__ == '__main__':
     url = "https://www.google.com"
-    asyncio.run(pred(url))
+    predictor = Predictor()
+    asyncio.run(predictor.predict(url))
     
