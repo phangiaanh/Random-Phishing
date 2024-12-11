@@ -58,9 +58,9 @@ class TrainingData():
         model_path = self.model_config.MODEL_PATH
         joblib.dump(grid_search.best_estimator_, model_path)
         
-# if __name__ == '__main__':
-#     train = TrainingData()
-#     report, matrix = train.train()
-#     print(report)
-#     print(matrix)
+if __name__ == '__main__':
+    train = TrainingData()
+    report, matrix = train.train()
+    print(report)
+    print(matrix)
         
